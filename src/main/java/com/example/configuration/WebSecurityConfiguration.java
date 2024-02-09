@@ -2,6 +2,8 @@ package com.example.configuration;
 
 import java.security.Security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.servics.JWT.UserDetailsServiceImpl;
 
@@ -22,72 +25,33 @@ import com.example.servics.JWT.UserDetailsServiceImpl;
 @EnableMethodSecurity
 @EnableWebSecurity
 public class WebSecurityConfiguration {
-	
-	@Bean
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
         return security
-                .csrf()
-                .disable()
-                .authorizeRequests()
-                    .requestMatchers("/authentication","/signup")
-                    .permitAll()
-                    .anyRequest() 
-                    .authenticated()
-                .and()
-                .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .build();
+            .csrf().disable()
+            .authorizeRequests()
+                .requestMatchers("/authentication", "/signup", "/question", "/questions/page/**", "/questions/id/**","/answer","/questions/**","/search/**")
+                .permitAll()
+                .anyRequest().authenticated()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .build();
     }
-				
-				
-	
-	
-	
-	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception 
-	{
-		return configuration.getAuthenticationManager();
-	}
-	
-	  @Bean
-	    public UserDetailsService userDetailsServiceImpl() {
-	        return new UserDetailsServiceImpl();
-	    }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public UserDetailsServiceImpl userDetailsServiceImpl() {
+        return new UserDetailsServiceImpl();
+    }
 }
